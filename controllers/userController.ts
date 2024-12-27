@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
-import { models } from "../config/database";
+import { Friend } from "../models/Friend";
+import { User } from "../models/User";
 import { fetchGitHubUser } from "../services/githubService";
 
-export const getUser = async (req: Request, res: Response): Promise<void> => {
+export const saveUser = async (req: Request, res: Response): Promise<void> => {
   const { username } = req.body;
 
   try {
-    const existingUser = await models.User.findOne({ where: { username } });
+    const existingUser = await User.findOne({ where: { username } });
 
     if (existingUser) {
       res.status(200).json(existingUser);
@@ -15,7 +16,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 
     const gitHubUser = await fetchGitHubUser(username);
 
-    const newUser = await models.User.create({
+    const newUser = await User.create({
       username: gitHubUser.login,
       avatar_url: gitHubUser.avatar_url,
       location: gitHubUser.location,

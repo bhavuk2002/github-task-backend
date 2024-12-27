@@ -19,7 +19,7 @@ export default (sequelize: Sequelize) => {
         allowNull: false,
       },
       friendId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
       },
     },
