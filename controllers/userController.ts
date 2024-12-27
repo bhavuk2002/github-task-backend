@@ -33,3 +33,23 @@ export const saveUser = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ error });
   }
 };
+
+export const searchUsers = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { username, location } = req.query;
+
+  try {
+    const users = await User.findAll({
+      where: {
+        ...(username && { username }),
+        ...(location && { location }),
+      },
+    });
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Error searching users", error: error });
+  }
+};
