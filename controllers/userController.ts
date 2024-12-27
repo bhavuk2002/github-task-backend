@@ -111,3 +111,34 @@ export const updateUser = async (
     res.status(500).json({ message: "Error updating user", error: error });
   }
 };
+
+export const getSortedUsers = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    // Get the sort field from the query params (e.g., ?sortBy=followers)
+    const sortField = (req.query.sortBy as string) || "createdAt"; // Default to created_at if not provided
+    const sortOrder = (req.query.sortOrder as string) || "ASC"; // Default to asc order
+
+    const allowedSortFields = [
+      "public_repos",
+      "public_gists",
+      "followers",
+      "following",
+      "createdAt",
+    ];
+
+    if (!allowedSortFields.includes(sortField)) {
+      res.status(400).json({ message: "Invalid sort field" });
+    }
+
+    const users = await User.findAll({
+      order: [[sortField, sortOrder]],
+    });
+
+    res.status(200).json({ users });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users", error });
+  }
+};
