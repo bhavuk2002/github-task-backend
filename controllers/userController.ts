@@ -118,8 +118,17 @@ export const getSortedUsers = async (
 ): Promise<void> => {
   try {
     // Get the sort field from the query params (e.g., ?sortBy=followers)
-    const sortField = (req.query.sortBy as string) || "createdAt"; // Default to created_at if not provided
-    const sortOrder = (req.query.sortOrder as string) || "ASC"; // Default to asc order
+    const sortBy = ((req.query.sortBy as string) || "createdAt").split(","); // Default to created_at if not provided
+    const sortOrder = ((req.query.sortOrder as string) || "ASC").split(","); // Default to asc order
+
+    console.log(sortBy);
+
+    if (sortBy.length !== sortOrder.length) {
+      res
+        .status(400)
+        .json({ message: "Mismatch between sort fields and sort orders" });
+      return;
+    }
 
     const allowedSortFields = [
       "public_repos",
@@ -129,12 +138,21 @@ export const getSortedUsers = async (
       "createdAt",
     ];
 
-    if (!allowedSortFields.includes(sortField)) {
-      res.status(400).json({ message: "Invalid sort field" });
+    for (let field of sortBy) {
+      if (!allowedSortFields.includes(field)) {
+        res.status(400).json({ message: `Invalid sort field: ${field}` });
+        return;
+      }
+    }
+
+    const order: any[] = [];
+    // ['followers', 'ASC']
+    for (let i = 0; i < sortBy.length; i++) {
+      order.push([sortBy[i], sortOrder[i].toUpperCase()]); // to handle case insensitivity (ASC/DESC)
     }
 
     const users = await User.findAll({
-      order: [[sortField, sortOrder]],
+      order: order,
     });
 
     res.status(200).json({ users });
