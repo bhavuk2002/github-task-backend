@@ -53,3 +53,24 @@ export const searchUsers = async (
     res.status(500).json({ message: "Error searching users", error: error });
   }
 };
+
+export const softDeleteUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { username } = req.params;
+
+  try {
+    const user = await User.findOne({ where: { username } });
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    await user.destroy();
+    res.status(200).json({ message: "User soft deleted" });
+  } catch (error) {
+    res.status(500).json({ message: "Error soft deleting user", error: error });
+  }
+};

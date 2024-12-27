@@ -13,7 +13,7 @@ export class User extends Model {
   public following!: number;
   public createdAt!: Date;
   public updatedAt!: Date;
-  public is_deleted!: boolean;
+  public deletedAt!: Date;
 }
 
 export default (sequelize: Sequelize) => {
@@ -61,15 +61,12 @@ export default (sequelize: Sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      is_deleted: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
     },
     {
       sequelize,
       tableName: "users",
       timestamps: true,
+      paranoid: true, // Enables soft delete with deletedAt field
     }
   );
 
