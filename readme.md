@@ -140,7 +140,7 @@ Make sure the following are installed on your system:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-repo/github-task-backend.git
+git clone https://github.com/bhavuk2002/github-task-backend.git
 cd github-task-backend
 ```
 
