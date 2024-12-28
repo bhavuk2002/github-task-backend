@@ -82,9 +82,22 @@ Represents a friendship relationship between users.
 ### Users
 
 - **POST** `/api/users`: Create a new user.
+
+  Pass username in request body.
+
 - **GET** `/api/users`: Get all users sorted by different paramters.
-- **GET** `/api/users/search?query=...`: Search users by username & location.
+
+  Valid paramters: `public_repos`, `public_gists`, `followers`, `following`, `createdAt`
+
+  Use Case: `/api/users?sortBy=followers,following&sortOrder=ASC,DESC`
+
+- **GET** `/api/users/search?username=...`: Search users by username & location.
 - **PATCH** `/api/users/:username`: Update user information.
+
+  Valid paramters: `location`, `bio`, `blog`
+
+  Pass data in resquest body.
+
 - **DELETE** `/api/users/:username`: Soft delete a user.
 
 ### Friends
