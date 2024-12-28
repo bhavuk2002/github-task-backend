@@ -17,6 +17,7 @@ export const saveUser = async (req: Request, res: Response): Promise<void> => {
     const gitHubUser = await fetchGitHubUser(username);
 
     const newUser = await User.create({
+      id: gitHubUser.id,
       username: gitHubUser.login,
       avatar_url: gitHubUser.avatar_url,
       location: gitHubUser.location,
