@@ -6,6 +6,8 @@ import { fetchGitHubUser } from "../services/githubService";
 export const saveUser = async (req: Request, res: Response): Promise<void> => {
   const { username } = req.body;
 
+  console.log(username);
+
   try {
     const existingUser = await User.findOne({ where: { username } });
 
@@ -16,17 +18,24 @@ export const saveUser = async (req: Request, res: Response): Promise<void> => {
 
     const gitHubUser = await fetchGitHubUser(username);
 
+    if (gitHubUser.status == 404) {
+      res.send(404).json("No User found");
+      return;
+    }
+
+    const gitHubUserData = gitHubUser.data;
+
     const newUser = await User.create({
-      id: gitHubUser.id,
-      username: gitHubUser.login,
-      avatar_url: gitHubUser.avatar_url,
-      location: gitHubUser.location,
-      blog: gitHubUser.blog,
-      bio: gitHubUser.bio,
-      public_repos: gitHubUser.public_repos,
-      public_gists: gitHubUser.public_gists,
-      followers: gitHubUser.followers,
-      following: gitHubUser.following,
+      id: gitHubUserData.id,
+      username: gitHubUserData.login,
+      avatar_url: gitHubUserData.avatar_url,
+      location: gitHubUserData.location,
+      blog: gitHubUserData.blog,
+      bio: gitHubUserData.bio,
+      public_repos: gitHubUserData.public_repos,
+      public_gists: gitHubUserData.public_gists,
+      followers: gitHubUserData.followers,
+      following: gitHubUserData.following,
     });
 
     res.status(201).json(newUser);
